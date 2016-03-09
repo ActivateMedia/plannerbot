@@ -62,13 +62,7 @@ function postTodayEvents(events, cb) {
   var messages = {
     text: "Good morning <!channel|channel>! Here the events for today:",
     channel: config.slack.channel,
-    attachments: [
-      {
-        fallback: "",
-        color: "good", // Can either be one of 'good', 'warning', 'danger'
-        fields: []
-      }
-    ]
+    attachments: []
   };
 
   events.forEach(function(event) {
@@ -107,7 +101,7 @@ function postTodayEvents(events, cb) {
 
     var _tmpObj = { 
         fallback: "fallback text",
-        color: "good", // Can either be one of 'good', 'warning', 'danger'
+        color: config.slack.eventColor,
         fields: [{              
                   title: event.SUMMARY,
                   value: eventLabels,
