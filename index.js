@@ -22,7 +22,7 @@ app.get('/', function (req, res) {
 });
 
 /* Today Events API Endpoint */
-app.get('/get-today-events', function (req, res) {
+app.get('/today', function (req, res) {
 
   getTodayEvents(function(events) {
      events.sort(compare);
