@@ -25,6 +25,7 @@
     "express": "^4.13.4",
     "libxmljs": "^0.17.1",
     "moment-timezone": "^0.5.1",
-    "node-caldav": "0.0.1"
+    "node-caldav": "0.0.1",
+    "node-slackr": "^0.1.2"
   }
 }
