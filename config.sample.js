@@ -18,7 +18,7 @@ config.caldav.timeFormat = "YYYYMMDDTHHmms";
 config.api.port = 3000;
 
 /* Slack WebHook Settings */
-config.slack.botName = "";
+config.slack.username = "";
 config.slack.emoji = ":calendar:";
 config.slack.channel = "";
 config.slack.webhook_url = "";
