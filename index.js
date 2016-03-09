@@ -19,13 +19,13 @@ var app = express();
 /* Root API Endpoint */
 app.get('/', function (req, res) {
  res.send('Activate Media Planner!');
- console.log(moment().day());
 });
 
 /* Today Events API Endpoint */
 app.get('/get-today-events', function (req, res) {
 
   getTodayEvents(function(events) {
+     events.sort(compare);
      postTodayEvents(events, function(result) {
          console.log("Slack message has been sent");
 	 res.send("Slack message sent successfully");
@@ -43,6 +43,20 @@ var findPropertyNameByRegex = function(o, r) {
   return undefined;
 };
 
+
+function compare(a,b) {
+  
+  var startDate_a = findPropertyNameByRegex(a, "DTSTART");
+  var startDate_b = findPropertyNameByRegex(b, "DTSTART");
+
+  if (a[startDate_a] < b[startDate_b])
+    return -1;
+  else if (a[startDate_a] > b[startDate_b])
+    return 1;
+  else 
+    return 0;
+}
+
 function postTodayEvents(events, cb) {
 
   var messages = {
@@ -59,7 +73,6 @@ function postTodayEvents(events, cb) {
 
   events.forEach(function(event) {
    
-    console.log(event);    
     var eventLabels = "";
     var startDate = findPropertyNameByRegex(event, "DTSTART");
     var startDateLabel = "";
@@ -102,11 +115,12 @@ function postTodayEvents(events, cb) {
                  }]
     }; 
     messages.attachments.push(_tmpObj);
-    console.log(event);
   });
 
   slack.notify(messages, function(err, result) {
-    console.log(err, result);
+    if(err !== null) {
+      console.log(err, result);
+    }
   });
 
   cb(true);
