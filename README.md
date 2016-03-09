@@ -22,5 +22,5 @@ To create your Slack webhook [click here](https://api.slack.com/incoming-webhook
 ## Add a cronjob
 It will call the API `today` Mon-Fri at 8:00 am
 ```
-0 8 * * 1-5 wget --timeout=360000 --quiet -O /dev/null http://your-domain/today
+0 8 * * 1-5 wget --timeout=360000 --quiet -O /dev/null http://your-domain:your-port/today
 ```
