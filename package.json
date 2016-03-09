@@ -1,0 +1,30 @@
+{
+  "name": "planner-server",
+  "version": "0.0.1",
+  "description": "Activate Media Planner channel server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://rexromae:6c61041808ba6e6d7bca4be9d0dac3176f9d059a@github.com/ActivateMedia/planner-server.git"
+  },
+  "keywords": [
+    "planner",
+    "caldav",
+    "slack"
+  ],
+  "author": "Andrea Falzetti <andrea@activate.co.uk>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ActivateMedia/planner-server/issues"
+  },
+  "homepage": "https://github.com/ActivateMedia/planner-server#readme",
+  "dependencies": {
+    "express": "^4.13.4",
+    "libxmljs": "^0.17.1",
+    "moment-timezone": "^0.5.1",
+    "node-caldav": "0.0.1"
+  }
+}
