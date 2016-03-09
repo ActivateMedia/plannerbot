@@ -12,18 +12,31 @@ app.get('/', function (req, res) {
 });
 
 app.get('/get-today-events', function (req, res) {
- var query_start_date = moment().subtract(1, 'days').set('hour', 23).set('minute', 59).set('second', 59).format(config.caldav.timeFormat) + "Z";
+
+  getTodayEvents(function(data) {
+     console.log(data);
+     postTodayEvents(function(result) {
+         console.log(result);
+     });    
+  });
+});
+
+function postTodayEvents(cb) {
+
+}
+
+function getTodayEvents(cb) {
+  var query_start_date = moment().subtract(1, 'days').set('hour', 23).set('minute', 59).set('second', 59).format(config.caldav.timeFormat) + "Z";
  var query_end_date = moment().set('hour', 23).set('minute', 59).set('second', 59).format(config.caldav.timeFormat) + "Z";
- var output = {}; 
+ var output = {};
  output.start_date = query_start_date;
  output.end_date = query_end_date;
- res.send(output);
 
  caldav.getEvents(config.caldav.url, config.caldav.username, config.caldav.password, query_start_date, query_end_date, function(res) {
-    console.log(res);
-    
+    cb(res);
  });
-});
+}
+
 
 
 app.listen(3000, function () {
