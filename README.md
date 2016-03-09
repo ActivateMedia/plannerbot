@@ -2,9 +2,6 @@
 A CalDAV client written in Node.js that communicates daily events to a [Slack](https://slack.com/) channel.
 
 ## Installation
-
-Activate Planner channel server
-
 You need `git`, `npm` and `node` installed on your server.
 
 ```
@@ -14,7 +11,6 @@ npm install
 ```
 
 ## Configuration
-
 ```
 cp config.sample.js config.js
 ```
