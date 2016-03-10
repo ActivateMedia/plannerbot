@@ -23,7 +23,6 @@
   "dependencies": {
     "express": "^4.13.4",
     "libxmljs": "^0.17.1",
-    "node-caldav": "https://github.com/rexromae/node-caldav",
     "moment-timezone": "^0.5.1",
     "node-slackr": "^0.1.2"
   }
