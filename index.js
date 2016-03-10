@@ -26,7 +26,7 @@ app.get('/today', function (req, res) {
 
   getTodayEvents(function(events) {
      events.sort(compare);
- console.log(events);
+     // console.log(events);
      postTodayEvents(events, function(result) {
          console.log("Slack message has been sent");
 	 res.send("Slack message sent successfully");
@@ -110,7 +110,7 @@ function postTodayEvents(events, cb) {
         fallback: "fallback text",
         color: config.slack.eventColor,
         fields: [{              
-                  title: event.SUMMARY,
+                  title: stripslashes(event.SUMMARY),
                   value: eventLabels,
                   short: false
                  }]
@@ -137,7 +137,7 @@ function getTodayEvents(cb) {
  output.start_date = query_start_date;
  output.end_date = query_end_date;
 
- caldav.getEvents(config.caldav.devUrl, config.caldav.username, config.caldav.password, query_start_date, query_end_date, function(res) {
+ caldav.getEvents(config.caldav.url, config.caldav.username, config.caldav.password, query_start_date, query_end_date, function(res) {
     cb(res);
  });
 }
@@ -148,3 +148,35 @@ function getTodayEvents(cb) {
 app.listen(3000, function () {
  console.log(config.app.name + ' listening on port ' + config.api.port);
 });
+
+function stripslashes(str) {
+  //       discuss at: http://phpjs.org/functions/stripslashes/
+  //      original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+  //      improved by: Ates Goral (http://magnetiq.com)
+  //      improved by: marrtins
+  //      improved by: rezna
+  //         fixed by: Mick@el
+  //      bugfixed by: Onno Marsman
+  //      bugfixed by: Brett Zamir (http://brett-zamir.me)
+  //         input by: Rick Waldron
+  //         input by: Brant Messenger (http://www.brantmessenger.com/)
+  // reimplemented by: Brett Zamir (http://brett-zamir.me)
+  //        example 1: stripslashes('Kevin\'s code');
+  //        returns 1: "Kevin's code"
+  //        example 2: stripslashes('Kevin\\\'s code');
+  //        returns 2: "Kevin\'s code"
+
+  return (str + '')
+    .replace(/\\(.?)/g, function(s, n1) {
+      switch (n1) {
+      case '\\':
+        return '\\';
+      case '0':
+        return '\u0000';
+      case '':
+        return '';
+      default:
+        return n1;
+      }
+    });
+}
