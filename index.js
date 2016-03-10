@@ -26,6 +26,7 @@ app.get('/today', function (req, res) {
 
   getTodayEvents(function(events) {
      events.sort(compare);
+ console.log(events);
      postTodayEvents(events, function(result) {
          console.log("Slack message has been sent");
 	 res.send("Slack message sent successfully");
@@ -58,9 +59,15 @@ function compare(a,b) {
 }
 
 function postTodayEvents(events, cb) {
+ 
+  var goodMorningMsg = "Good morning <!channel|channel>! Here the events for today:";
+
+  if(events.length === 0) {
+     goodMorningMsg = "Good morning from PlannerBot! There are no events in the calendar today.";
+  }
 
   var messages = {
-    text: "Good morning <!channel|channel>! Here the events for today:",
+    text: goodMorningMsg,
     channel: config.slack.channel,
     attachments: []
   };
@@ -130,7 +137,7 @@ function getTodayEvents(cb) {
  output.start_date = query_start_date;
  output.end_date = query_end_date;
 
- caldav.getEvents(config.caldav.url, config.caldav.username, config.caldav.password, query_start_date, query_end_date, function(res) {
+ caldav.getEvents(config.caldav.devUrl, config.caldav.username, config.caldav.password, query_start_date, query_end_date, function(res) {
     cb(res);
  });
 }
