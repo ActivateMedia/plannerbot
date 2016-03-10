@@ -8,6 +8,8 @@ You need `git`, `npm` and `node` installed on your server.
 git clone https://github.com/ActivateMedia/planner-server/
 cd planner-server
 npm install
+cd node_modules
+git clone https://github.com/rexromae/node-caldav
 ```
 
 ## Configuration
@@ -24,3 +26,6 @@ It will call the API `today` Mon-Fri at 8:00 am
 ```
 0 8 * * 1-5 wget --timeout=360000 --quiet -O /dev/null http://your-domain:your-port/today
 ```
+
+## Run the application
+From the root of the app run `node index.js`
