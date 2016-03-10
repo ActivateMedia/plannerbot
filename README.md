@@ -26,3 +26,6 @@ It will call the API `today` Mon-Fri at 8:00 am
 ```
 0 8 * * 1-5 wget --timeout=360000 --quiet -O /dev/null http://your-domain:your-port/today
 ```
+
+## Run the application
+From the root of the app run `node index.js`
