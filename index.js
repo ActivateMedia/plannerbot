@@ -117,8 +117,10 @@ function postTodayEvents(events, cb) {
     
     var notesLabel = "";
     if(typeof event.DESCRIPTION !== "undefined") {
-       notesLabel = event.DESCRIPTION;
-    }
+       if(event.DESCRIPTION.indexOf(event.SUMMARY) < 0) {
+       	    notesLabel = event.DESCRIPTION;
+	}
+    }    
     if(notesLabel.length > 0) {
       eventLabels += "\n:pencil2: " + notesLabel;
     }
