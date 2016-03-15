@@ -26,7 +26,7 @@ app.get('/today', function (req, res) {
 
   getTodayEvents(function(events) {
      events.sort(compare);
-     // console.log(events);
+      console.log(events);
      postTodayEvents(events, function(result) {
          console.log("Slack message has been sent");
 	 res.send("Slack message sent successfully");
@@ -91,16 +91,18 @@ function postTodayEvents(events, cb) {
     }
     eventLabels += startDateLabel;
     var locationLabel = "";
-    if(typeof event['LOCATION'] !== "undefined") {
-       locationLabel = event['LOCATION'];
+    if(typeof event.LOCATION !== "undefined") {
+       locationLabel = event.LOCATION;
     }
     if(locationLabel.length > 0) {
       eventLabels += "\n:pushpin: " + locationLabel;
     }
     
     var notesLabel = "";
-    if(typeof event['DESCRIPTION'] !== "undefined") {
-       notesLabel = event["DESCRIPTION"];
+    if(typeof event.DESCRIPTION !== "undefined") {
+       if(event.DESCRIPTION.indexOf(event.SUMMARY) < 0) {
+       	    notesLabel = event.DESCRIPTION;
+	}
     }
     if(notesLabel.length > 0) {
       eventLabels += "\n:pencil2: " + notesLabel;
@@ -131,8 +133,8 @@ function postTodayEvents(events, cb) {
  * This function retrieves the events from the calendar and return an array of objects
  */
 function getTodayEvents(cb) {
-  var query_start_date = moment().subtract(1, 'days').set('hour', 23).set('minute', 59).set('second', 59).format(config.caldav.timeFormat) + "Z";
- var query_end_date = moment().set('hour', 23).set('minute', 59).set('second', 59).format(config.caldav.timeFormat) + "Z";
+  var query_start_date = moment().set({'hour': 0, 'minute': 0, 'second': 10}).format(config.caldav.timeFormat) + "Z";
+ var query_end_date = moment().set({'hour': 23, 'minute': 59, 'second': 59}).format(config.caldav.timeFormat) + "Z";
  var output = {};
  output.start_date = query_start_date;
  output.end_date = query_end_date;
