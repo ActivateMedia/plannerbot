@@ -111,7 +111,7 @@ function postTodayEvents(events, cb) {
         color: config.slack.eventColor,
         fields: [{              
                   title: stripslashes(event.SUMMARY),
-                  value: eventLabels,
+                  value: stripslashes(eventLabels),
                   short: false
                  }]
     }; 
