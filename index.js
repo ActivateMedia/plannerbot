@@ -4,6 +4,19 @@ var xmljs = require("libxmljs");
 var express = require('express');
 var caldav = require("node-caldav");
 var moment = require('moment-timezone');
+var bodyParser = require('body-parser')
+var AlchemyAPI = require('alchemy-api');
+
+/* Initialising AlchemyAPI */
+var alchemy = new AlchemyAPI(config.alchemyapi.api_key);
+
+/* Initialising Express APP */
+var app = express();
+
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
 
 /* Initialising Slack Client */
 Slack = require('node-slackr');
@@ -13,8 +26,12 @@ slack = new Slack(config.slack.webhook_url,{
   icon_emoji: config.slack.emoji
 });
 
-/* Initialising Express APP */
-var app = express();
+/* Event Scheduler */
+app.post('/schedule', function(req, res) {
+	console.log(req.body);
+	var user_name = req.body.user_name;
+res.send("OK " + user_name);
+});
 
 /* Root API Endpoint */
 app.get('/', function (req, res) {
@@ -147,6 +164,88 @@ function getTodayEvents(cb) {
  */
 app.listen(3000, function () {
  console.log(config.app.name + ' listening on port ' + config.api.port);
+});
+
+
+app.get('/alchemyapi/status', function(req, res) {
+  alchemy.apiKeyInfo({}, function(err, response) {
+    if (err) throw err;
+
+    // Do something with data
+    res.send("<p>Status: " + response.status + "</p><p>Consumed: " + response.consumedDailyTransactions + "</p><p>Limit: " + response.dailyTransactionLimit + "</p>");
+  });
+});
+
+
+app.get('/alchemyapi/combined', function(req, res){
+  var params = req.query;
+  console.log(params);
+  if(typeof params.data === "undefined" || params.data.length == 0) {
+     res.send("Data missing");
+  } else {
+    var features_array = params.features.split(',');
+    console.log(features_array);
+    alchemy.combined(params.data, features_array, {}, function(err, response) {
+      if (err) throw err;
+      res.send(response);
+      //var keywords = response.keywords;
+      //res.send(keywords);
+    });
+  }
+})
+
+app.get('/alchemyapi/date', function(req, res){
+  var params = req.query;
+  if(typeof params.data === "undefined" || params.data.length == 0) {
+     res.send("Data missing");
+  } else {
+    alchemy.date(params.data, {}, function(err, response) {
+      if (err) throw err;
+      res.send(response);
+    });
+  }
+});
+
+
+app.get('/alchemyapi/concepts', function(req, res){
+  var params = req.query;
+  console.log(params.data);
+  if(typeof params.data === "undefined" || params.data.length == 0) {
+     res.send("Data missing");
+  } else {
+    alchemy.concepts(params.data, {}, function(err, response) {
+      if (err) throw err;
+      var concepts = response.concepts;
+      res.send(concepts);
+    });
+  }
+});
+
+app.get('/alchemyapi/relations', function(req, res){
+  var params = req.query;
+  console.log(params.data);
+  if(typeof params.data === "undefined" || params.data.length == 0) {
+     res.send("Data missing");
+  } else {
+    alchemy.relations(params.data, {}, function(err, response) {
+      if (err) throw err;
+      var relations = response.relations;
+      res.send(relations);
+    });
+  }
+});
+
+app.get('/alchemyapi/keywords', function(req, res){
+  var params = req.query;
+  if(typeof params.data === "undefined" || params.data.length == 0) {
+     res.send("Data missing");
+  } else {
+    alchemy.keywords(params.data, {}, function(err, response) {
+      if (err) throw err;
+      var keywords = response.keywords;
+      res.send(keywords);
+    });
+  }
 });
 
 function stripslashes(str) {
