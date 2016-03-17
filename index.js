@@ -1,3 +1,6 @@
+'use strict';
+
+var util = require('util');
 var config = require('./config');
 var https = require("https");
 var xmljs = require("libxmljs");
@@ -6,7 +9,23 @@ var caldav = require("node-caldav");
 var moment = require('moment-timezone');
 var bodyParser = require('body-parser')
 var AlchemyAPI = require('alchemy-api');
+var Bot = require('slackbots');
+var PlannerBot = require('./lib/plannerbot');
+var NodeCache = require('node-cache');
 
+var myCache = new NodeCache();
+
+var plannerbot = new PlannerBot({
+    token: config.slack.bot_token,
+    name: config.slack.username.toLowerCase()
+});
+
+plannerbot.run();
+
+//plannerbot.getChannels(function(data){
+//	console.log("getChannels");
+//	console.log(data);
+//});
 /* Initialising AlchemyAPI */
 var alchemy = new AlchemyAPI(config.alchemyapi.api_key);
 
@@ -19,8 +38,8 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 })); 
 
 /* Initialising Slack Client */
-Slack = require('node-slackr');
-slack = new Slack(config.slack.webhook_url,{
+var Slack = require('node-slackr');
+var slack = new Slack(config.slack.webhook_url,{
   channel: config.slack.channel,
   username: config.slack.username,
   icon_emoji: config.slack.emoji
@@ -28,9 +47,9 @@ slack = new Slack(config.slack.webhook_url,{
 
 /* Event Scheduler */
 app.post('/schedule', function(req, res) {
-	console.log(req.body);
+	//console.log(req.body);
 	var user_name = req.body.user_name;
-res.send("OK " + user_name);
+  res.send("OK " + user_name);
 });
 
 /* Root API Endpoint */
@@ -167,6 +186,29 @@ function getTodayEvents(cb) {
 app.listen(3000, function () {
  console.log(config.app.name + ' listening on port ' + config.api.port);
 });
+
+
+app.get('/cache/keys', function(req, res) {
+  plannerbot.cache.keys( function( err, mykeys ){
+    if( !err ){
+      console.log( mykeys );
+     // [ "all", "my", "keys", "foo", "bar" ] 
+    }
+  });
+});
+
+app.get('/cache/key', function(req, res) {
+  var key = "D0T2HNJG6";
+  var event = plannerbot.cache.get(key);
+  if(typeof event !== "undefined") {
+    console.log(event);    
+  } else {
+    console.log("Object not found");
+  }
+
+});
+
+
 
 
 app.get('/alchemyapi/status', function(req, res) {
