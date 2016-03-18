@@ -22,6 +22,27 @@ var plannerbot = new PlannerBot({
 
 plannerbot.run();
 
+/*
+ * This function adds an event into the calendar
+ */
+function addEvent() {
+  
+  var event = {};
+  event.key = "randomandrea";
+  event.startDate = "20160319T08000";
+  event.endDate = "20160319T09000";
+  event.summary = "Test Event";
+  caldav.addEvent(event, config.caldav.devUrl, config.caldav.username, config.caldav.password, function(res) {
+    if(res === true) {
+      console.log("Event created");
+    } else {
+      console.log("Error creating the event");
+    }
+  });
+}
+
+addEvent();
+
 //plannerbot.getChannels(function(data){
 //	console.log("getChannels");
 //	console.log(data);
