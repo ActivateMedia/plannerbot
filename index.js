@@ -41,7 +41,7 @@ function addEvent() {
   });
 }
 
-addEvent();
+//addEvent();
 
 //plannerbot.getChannels(function(data){
 //	console.log("getChannels");
