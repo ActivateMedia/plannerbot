@@ -17,7 +17,9 @@ var myCache = new NodeCache();
 
 var plannerbot = new PlannerBot({
     token: config.slack.bot_token,
-    name: config.slack.username.toLowerCase()
+    name: config.slack.username.toLowerCase(),
+    max_timeout: 1,
+    cleaning_interval: 20000
 });
 
 plannerbot.run();
