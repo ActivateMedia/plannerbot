@@ -18,8 +18,8 @@ var myCache = new NodeCache();
 var plannerbot = new PlannerBot({
     token: config.slack.bot_token,
     name: config.slack.username.toLowerCase(),
-    max_timeout: 1,
-    cleaning_interval: 20000
+    max_timeout: 5,
+    cleaning_interval: 60000
 });
 
 plannerbot.run();
