@@ -132,46 +132,82 @@ function postTodayEvents(events, cb) {
   };
 
   events.forEach(function(event) {
+
+//   console.log(event);
+//   console.log("******************************");
+//   var _tmp = event.getFirstProperty('dtstart').getParameter('tzid');
+//   console.log(_tmp);
+//   console.log("******************************\n");
    
+      
+    var tzid = event.getFirstProperty('dtstart').getParameter('tzid');
     var eventLabels = "";
-    var startDate = findPropertyNameByRegex(event, "DTSTART");
+    var startDate = event.getFirstProperty('dtstart').getFirstValue().toString();
+    
     var startDateLabel = "";
-    if(event[startDate].length == 8) {
+    if(startDate.length == 8) {
       //es 20160309
       startDateLabel = "All day";
     } else {
-      var endDate = findPropertyNameByRegex(event, "DTEND");
-      var _m1 = moment(event[startDate]);
-      var _m2 = moment(event[endDate]);
-      var ukTime = ":uk: " + _m1.tz("Europe/London").format('h:mm a') + " - " + _m2.tz("Europe/London").format('h:mm a');
-      var swissTime = ":flag-ch: " + _m1.tz("Europe/Zurich").format('h:mm a') + " - " + _m2.tz("Europe/Zurich").format('h:mm a');
-      var delhiTime = ":flag-in: " + _m1.tz("Asia/Colombo").format('h:mm a') + " - " + _m2.tz("Asia/Colombo").format('h:mm a');
-      startDateLabel = ukTime + " / " + swissTime + " / " + delhiTime;
+      var endDate = event.getFirstProperty('dtend').getFirstValue().toString();      
+      var _m1 = moment.tz(startDate, tzid);
+      var _m2 = moment.tz(endDate, tzid);
+      
+      var timezones = [{
+                         "tzid": "Europe/London",
+                         "icon": ":uk:"
+                        },
+                        {
+                         "tzid": "Europe/Zurich",
+                         "icon": ":flag-ch:"
+                        },
+                        {
+                         "tzid": "Asia/Colombo",
+                         "icon": ":flag-in:"
+                        }];
+      
+//      var ukTime = ":uk: " + _m1.tz("Europe/London").format('h:mm a') + " - " + _m2.tz("Europe/London").format('h:mm a');
+//      var swissTime = ":flag-ch: " + _m1.tz("Europe/Zurich").format('h:mm a') + " - " + _m2.tz("Europe/Zurich").format('h:mm a');
+//      var delhiTime = ":flag-in: " + _m1.tz("Asia/Colombo").format('h:mm a') + " - " + _m2.tz("Asia/Colombo").format('h:mm a');
+//      startDateLabel = ukTime + "    " + swissTime + "    " + delhiTime;
+      
+      for (var i = 0, len = timezones.length; i < len; i++) {
+        var _tmp = timezones[i].icon + " " + _m1.tz(timezones[i].tzid).format('h:mm a') + " - " + _m2.tz(timezones[i].tzid).format('h:mm a');
+        if(i < len) {
+          startDateLabel += "    ";
+        }
+        startDateLabel += _tmp;
+      }
     }
     eventLabels += startDateLabel;
     var locationLabel = "";
-    if(typeof event.LOCATION !== "undefined") {
-       locationLabel = event.LOCATION;
+    var location = event.getFirstPropertyValue('location');
+    if(location !== null) {
+       locationLabel = location;
     }
     if(locationLabel.length > 0) {
       eventLabels += "\n:pushpin: " + locationLabel;
     }
     
     var notesLabel = "";
-    if(typeof event.DESCRIPTION !== "undefined") {
-       if(event.DESCRIPTION.indexOf(event.SUMMARY) < 0) {
-       	    notesLabel = event.DESCRIPTION;
-	}
+    var description = event.getFirstPropertyValue('description');
+    var summary = event.getFirstPropertyValue('summary');
+    if(description !== null) {
+       if(description.indexOf(summary) < 0) {
+       	    notesLabel = description;
+    	 }
     }    
     if(notesLabel.length > 0) {
       eventLabels += "\n:pencil2: " + notesLabel;
     }
-
+    
+    
+    
     var _tmpObj = { 
         fallback: "fallback text",
         color: config.slack.eventColor,
         fields: [{              
-                  title: stripslashes(event.SUMMARY),
+                  title: stripslashes(summary),
 		  value: stripslashes(eventLabels),
                   short: false
                  }]
