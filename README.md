@@ -10,6 +10,8 @@ cd planner-server
 npm install
 cd node_modules
 git clone https://github.com/andreafalzetti/node-caldav
+cd node-caldav
+npm install
 ```
 
 ## Configuration
