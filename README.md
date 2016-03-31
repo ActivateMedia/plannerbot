@@ -9,7 +9,7 @@ git clone https://github.com/ActivateMedia/planner-server/
 cd planner-server
 npm install
 cd node_modules
-git clone https://github.com/rexromae/node-caldav
+git clone https://github.com/andreafalzetti/node-caldav
 ```
 
 ## Configuration
