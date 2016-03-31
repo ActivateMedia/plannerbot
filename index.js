@@ -34,7 +34,7 @@ function addEvent() {
   event.startDate = "20160319T08000";
   event.endDate = "20160319T09000";
   event.summary = "Test Event";
-  caldav.addEvent(event, config.caldav.devUrl, config.caldav.username, config.caldav.password, function(res) {
+  caldav.addEvent(event, config.caldav.url, config.caldav.username, config.caldav.password, function(res) {
     if(res === true) {
       console.log("Event created");
     } else {
