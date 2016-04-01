@@ -12,6 +12,7 @@ var AlchemyAPI = require('alchemy-api');
 var Bot = require('slackbots');
 var PlannerBot = require('./lib/plannerbot');
 var NodeCache = require('node-cache');
+var wit = require('node-wit');
 
 var myCache = new NodeCache();
 
@@ -23,6 +24,16 @@ var plannerbot = new PlannerBot({
 });
 
 plannerbot.run();
+
+function wit_test() {
+   wit.captureTextIntent(config.wit.access_token, "Hello world", function (err, res) {
+    console.log("Response from Wit for text input: ");
+    if (err) console.log("Error: ", err);
+      console.log(JSON.stringify(res, null, " "));
+    });
+}
+
+//wit_test();
 
 /* Initialising AlchemyAPI */
 var alchemy = new AlchemyAPI(config.alchemyapi.api_key);
