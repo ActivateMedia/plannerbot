@@ -53,20 +53,43 @@ app.get('/today', function (req, res) {
 
   getTodayEvents(function(events) {
      events.sort(compare);
-     // console.log(events);
+     //console.log(events);
      postTodayEvents(events, function(result) {
          console.log("Slack message has been sent");
-	 res.send("Slack message sent successfully");
+         res.send("Slack message sent successfully");
      });    
   });
 });
 
+var findPropertyNameByRegex = function(o, r) {
+  var key;
+  for (key in o) {
+    if (key.match(r)) {
+      return key;
+    }
+  }
+  return undefined;
+};
+
+function compare(a,b) {
+  
+  var startDate_a = a.getFirstProperty('dtstart').getFirstValue().toString();//findPropertyNameByRegex(a, "DTSTART");
+  var startDate_b = b.getFirstProperty('dtstart').getFirstValue().toString();//findPropertyNameByRegex(b, "DTSTART");
+
+  if (a[startDate_a] < b[startDate_b])
+    return -1;
+  else if (a[startDate_a] > b[startDate_b])
+    return 1;
+  else 
+    return 0;
+}
+
 function postTodayEvents(events, cb) {
  
-  var goodMorningMsg = "Good morning <!channel|channel>! Here the events for today:";
+  var goodMorningMsg = "Hello <!channel|channel>! Here the events for today:";
 
   if(events.length === 0) {
-     goodMorningMsg = "Good morning from PlannerBot! There are no events in the calendar today.";
+     goodMorningMsg = "Hello from PlannerBot! There are no events in the calendar today.";
   }
 
   var messages = {
@@ -77,11 +100,10 @@ function postTodayEvents(events, cb) {
 
   events.forEach(function(event) {
 
-//   console.log(event);
-//   console.log("******************************");
-//   var _tmp = event.getFirstProperty('dtstart').getParameter('tzid');
-//   console.log(_tmp);
-//   console.log("******************************\n");
+   //console.log("******************************");
+   //var _tmp = event.getFirstProperty('dtstart').getFirstValue().toString();
+   //console.log(_tmp);
+   //console.log("******************************\n");
    
       
     var tzid = event.getFirstProperty('dtstart').getParameter('tzid');
@@ -89,13 +111,20 @@ function postTodayEvents(events, cb) {
     var startDate = event.getFirstProperty('dtstart').getFirstValue().toString();
     
     var startDateLabel = "";
-    if(startDate.length == 8) {
-      //es 20160309
+    if(startDate.length <= 10) {
+      //es 2016-03-09 or 20130309
       startDateLabel = "All day";
     } else {
       var endDate = event.getFirstProperty('dtend').getFirstValue().toString();      
-      var _m1 = moment.tz(startDate, tzid);
-      var _m2 = moment.tz(endDate, tzid);
+      
+      if(typeof tzid !== "undefined") {
+        var _m1 = moment.tz(startDate, tzid);
+        var _m2 = moment.tz(endDate, tzid);        
+      } else {
+        // Floating Timezone or Undefined
+        var _m1 = moment(startDate);
+        var _m2 = moment(endDate);        
+      }
       
       var timezones = [{
                          "tzid": "Europe/London",
@@ -110,15 +139,10 @@ function postTodayEvents(events, cb) {
                          "icon": ":flag-in:"
                         }];
       
-//      var ukTime = ":uk: " + _m1.tz("Europe/London").format('h:mm a') + " - " + _m2.tz("Europe/London").format('h:mm a');
-//      var swissTime = ":flag-ch: " + _m1.tz("Europe/Zurich").format('h:mm a') + " - " + _m2.tz("Europe/Zurich").format('h:mm a');
-//      var delhiTime = ":flag-in: " + _m1.tz("Asia/Colombo").format('h:mm a') + " - " + _m2.tz("Asia/Colombo").format('h:mm a');
-//      startDateLabel = ukTime + "    " + swissTime + "    " + delhiTime;
-      
       for (var i = 0, len = timezones.length; i < len; i++) {
-        var _tmp = timezones[i].icon + " " + _m1.tz(timezones[i].tzid).format('h:mm a') + " - " + _m2.tz(timezones[i].tzid).format('h:mm a');
+        var _tmp = timezones[i].icon + " " + _m1.tz(timezones[i].tzid).format('HH:mm') + " - " + _m2.tz(timezones[i].tzid).format('HH:mm');
         if(i < len) {
-          startDateLabel += "    ";
+          startDateLabel += "\n";
         }
         startDateLabel += _tmp;
       }
