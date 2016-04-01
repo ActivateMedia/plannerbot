@@ -24,31 +24,6 @@ var plannerbot = new PlannerBot({
 
 plannerbot.run();
 
-/*
- * This function adds an event into the calendar
- */
-function addEvent() {
-  
-  var event = {};
-  event.key = "randomandrea";
-  event.startDate = "20160319T08000";
-  event.endDate = "20160319T09000";
-  event.summary = "Test Event";
-  caldav.addEvent(event, config.caldav.url, config.caldav.username, config.caldav.password, function(res) {
-    if(res === true) {
-      console.log("Event created");
-    } else {
-      console.log("Error creating the event");
-    }
-  });
-}
-
-//addEvent();
-
-//plannerbot.getChannels(function(data){
-//	console.log("getChannels");
-//	console.log(data);
-//});
 /* Initialising AlchemyAPI */
 var alchemy = new AlchemyAPI(config.alchemyapi.api_key);
 
@@ -68,16 +43,9 @@ var slack = new Slack(config.slack.webhook_url,{
   icon_emoji: config.slack.emoji
 });
 
-/* Event Scheduler */
-app.post('/schedule', function(req, res) {
-	//console.log(req.body);
-	var user_name = req.body.user_name;
-  res.send("OK " + user_name);
-});
-
 /* Root API Endpoint */
 app.get('/', function (req, res) {
- res.send('Activate Media Planner!');
+ res.send('Hi, I\'m PlannerBot!');
 });
 
 /* Today Events API Endpoint */
@@ -92,30 +60,6 @@ app.get('/today', function (req, res) {
      });    
   });
 });
-
-var findPropertyNameByRegex = function(o, r) {
-  var key;
-  for (key in o) {
-    if (key.match(r)) {
-      return key;
-    }
-  }
-  return undefined;
-};
-
-
-function compare(a,b) {
-  
-  var startDate_a = findPropertyNameByRegex(a, "DTSTART");
-  var startDate_b = findPropertyNameByRegex(b, "DTSTART");
-
-  if (a[startDate_a] < b[startDate_b])
-    return -1;
-  else if (a[startDate_a] > b[startDate_b])
-    return 1;
-  else 
-    return 0;
-}
 
 function postTodayEvents(events, cb) {
  
@@ -247,15 +191,20 @@ app.listen(3000, function () {
 });
 
 
+/*
+ * Prints the cache object keys currently stored in cache
+ */
 app.get('/cache/keys', function(req, res) {
   plannerbot.cache.keys( function( err, mykeys ){
     if( !err ){
       console.log( mykeys );
-     // [ "all", "my", "keys", "foo", "bar" ] 
     }
   });
 });
 
+/*
+ * Prints the content of a specific cache object by key
+ */
 app.get('/cache/key', function(req, res) {
   var key = "D0T2HNJG6";
   var event = plannerbot.cache.get(key);
@@ -264,12 +213,10 @@ app.get('/cache/key', function(req, res) {
   } else {
     console.log("Object not found");
   }
-
 });
 
 
-
-
+/* Alchemy API calls */
 app.get('/alchemyapi/status', function(req, res) {
   alchemy.apiKeyInfo({}, function(err, response) {
     if (err) throw err;
@@ -278,8 +225,6 @@ app.get('/alchemyapi/status', function(req, res) {
     res.send("<p>Status: " + response.status + "</p><p>Consumed: " + response.consumedDailyTransactions + "</p><p>Limit: " + response.dailyTransactionLimit + "</p>");
   });
 });
-
-
 app.get('/alchemyapi/combined', function(req, res){
   var params = req.query;
   console.log(params);
@@ -296,7 +241,6 @@ app.get('/alchemyapi/combined', function(req, res){
     });
   }
 })
-
 app.get('/alchemyapi/date', function(req, res){
   var params = req.query;
   if(typeof params.data === "undefined" || params.data.length == 0) {
@@ -308,8 +252,6 @@ app.get('/alchemyapi/date', function(req, res){
     });
   }
 });
-
-
 app.get('/alchemyapi/concepts', function(req, res){
   var params = req.query;
   console.log(params.data);
@@ -323,7 +265,6 @@ app.get('/alchemyapi/concepts', function(req, res){
     });
   }
 });
-
 app.get('/alchemyapi/relations', function(req, res){
   var params = req.query;
   console.log(params.data);
@@ -337,7 +278,6 @@ app.get('/alchemyapi/relations', function(req, res){
     });
   }
 });
-
 app.get('/alchemyapi/keywords', function(req, res){
   var params = req.query;
   if(typeof params.data === "undefined" || params.data.length == 0) {
