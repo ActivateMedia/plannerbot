@@ -13,6 +13,7 @@ var Bot = require('slackbots');
 var PlannerBot = require('./lib/plannerbot');
 var NodeCache = require('node-cache');
 var wit = require('node-wit');
+var colors = require('colors');
 
 var myCache = new NodeCache();
 
@@ -56,7 +57,7 @@ var slack = new Slack(config.slack.webhook_url,{
 
 /* Root API Endpoint */
 app.get('/', function (req, res) {
- res.send('Hi, I\'m PlannerBot!');
+ res.send('Hi, I\'m ' + config.app.name + "!");
 });
 
 /* Today Events API Endpoint */
@@ -100,7 +101,7 @@ function postTodayEvents(events, cb) {
   var goodMorningMsg = "Hello <!channel|channel>! Here the events for today:";
 
   if(events.length === 0) {
-     goodMorningMsg = "Hello from PlannerBot! There are no events in the calendar today.";
+     goodMorningMsg = "Hello from " + config.app.name + "! There are no events in the calendar today.";
   }
 
   var messages = {
@@ -222,7 +223,7 @@ function getTodayEvents(cb) {
  * Main Express Process 
  */
 app.listen(3000, function () {
- console.log(config.app.name + ' listening on port ' + config.api.port);
+ console.log(colors.rainbow(config.app.name + ' listening on port ' + config.api.port).bold);
 });
 
 
