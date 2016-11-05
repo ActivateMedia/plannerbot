@@ -15,6 +15,17 @@ if(typeof ENV === "undefined") {
   ENV = {};
   require('dotenv').config();
 }
+// test
+var query_start_date = moment("2016-11-03").set({'hour': 0, 'minute': 0, 'second': 10}).format(ENV['CALDAV_TIME_FORMAT'] || process.env.CALDAV_TIME_FORMAT) + "Z";
+var query_end_date = moment("2016-11-04").set({'hour': 23, 'minute': 59, 'second': 59}).format(ENV['CALDAV_TIME_FORMAT'] || process.env.CALDAV_TIME_FORMAT) + "Z";
+
+caldav.getEvents(ENV['CALDAV_URL'] || process.env.CALDAV_URL,
+                 ENV['CALDAV_USERNAME'] || process.env.CALDAV_USERNAME,
+                 ENV['CALDAV_PASSWORD'] || process.env.CALDAV_PASSWORD, query_start_date, query_end_date, function(res) {
+   console.log(res);
+});
+// end test
+
 var plannerbot = new PlannerBot({
     token: ENV['SLACK_BOT_TOKEN'] || process.env.SLACK_BOT_TOKEN,
     name: `${ENV['SLACK_USERNAME'] || process.env.SLACK_USERNAME}`.toLowerCase(),
