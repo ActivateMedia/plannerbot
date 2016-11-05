@@ -11,10 +11,9 @@ var NodeCache = require('node-cache');
 var cron = require('node-cron');
 var myCache = new NodeCache();
 
-require('dotenv').config();
-
 if(typeof ENV === "undefined") {
   ENV = {};
+  require('dotenv').config();
 }
 var plannerbot = new PlannerBot({
     token: ENV['SLACK_BOT_TOKEN'] || process.env.SLACK_BOT_TOKEN,
