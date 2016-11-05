@@ -1,6 +1,6 @@
 {
-  "name": "planner-server",
-  "version": "0.0.1",
+  "name": "plannerbot",
+  "version": "0.0.2",
   "description": "Activate Media Planner channel server",
   "main": "index.js",
   "scripts": {
