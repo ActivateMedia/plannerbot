@@ -1,3 +1,6 @@
+.env
+setup-heroku.sh
+
 # Logs
 logs
 *.log
