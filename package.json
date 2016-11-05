@@ -26,10 +26,12 @@
     "body-parser": "^1.15.0",
     "cb": "^0.1.0",
     "chrono-node": "^1.1.5",
+    "dotenv": "^2.0.0",
     "express": "^4.13.4",
-    "libxmljs": "^0.17.1",
     "moment-timezone": "^0.5.1",
     "node-cache": "^3.2.0",
+    "node-caldav-mod": "*",
+    "node-cron": "^1.1.2",
     "node-slackr": "^0.1.2",
     "slackbots": "^0.5.1",
     "sqlite3": "^3.1.1"
