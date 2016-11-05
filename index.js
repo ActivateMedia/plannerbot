@@ -51,7 +51,7 @@ app.get('/', function (req, res) {
 cron.schedule(ENV['CRON'] || process.env.CRON, () => {
   getTodayEvents((events) => {
      events.sort(compare);
-     postTodayEvents(events, function(result) {
+     postTodayEvents(events, (result) => {
          console.log("Slack message has been sent");
      });
   });
@@ -135,33 +135,21 @@ function postTodayEvents(events, cb) {
     }
     eventLabels += startDateLabel;
     var locationLabel = "";
-<<<<<<< HEAD
     var location = event.getFirstPropertyValue('location');
     if(location !== null) {
        locationLabel = location;
-=======
-    if(typeof event.LOCATION !== "undefined") {
-       locationLabel = event.LOCATION;
->>>>>>> master
     }
     if(locationLabel.length > 0) {
       eventLabels += "\n:pushpin: " + locationLabel;
     }
 
     var notesLabel = "";
-<<<<<<< HEAD
     var description = event.getFirstPropertyValue('description');
     var summary = event.getFirstPropertyValue('summary');
     if(description !== null) {
        if(description.indexOf(summary) < 0) {
        	    notesLabel = description;
     	 }
-=======
-    if(typeof event.DESCRIPTION !== "undefined") {
-       if(event.DESCRIPTION.indexOf(event.SUMMARY) < 0) {
-       	    notesLabel = event.DESCRIPTION;
-	}
->>>>>>> master
     }
     if(notesLabel.length > 0) {
       eventLabels += "\n:pencil2: " + notesLabel;
@@ -171,17 +159,10 @@ function postTodayEvents(events, cb) {
 
     var _tmpObj = {
         fallback: "fallback text",
-<<<<<<< HEAD
         color: ENV['SLACK_EVENT_COLOR'] || process.env.SLACK_EVENT_COLOR,
         fields: [{
                   title: stripslashes(summary),
 		  value: stripslashes(eventLabels),
-=======
-        color: config.slack.eventColor,
-        fields: [{
-                  title: stripslashes(event.SUMMARY),
-                  value: stripslashes(eventLabels),
->>>>>>> master
                   short: false
                  }]
     };
@@ -201,7 +182,6 @@ function postTodayEvents(events, cb) {
  * This function retrieves the events from the calendar and return an array of objects
  */
 function getTodayEvents(cb) {
-<<<<<<< HEAD
   var query_start_date = moment().set({'hour': 0, 'minute': 0, 'second': 10}).format(ENV['CALDAV_TIME_FORMAT'] || process.env.CALDAV_TIME_FORMAT) + "Z";
   var query_end_date = moment().set({'hour': 23, 'minute': 59, 'second': 59}).format(ENV['CALDAV_TIME_FORMAT'] || process.env.CALDAV_TIME_FORMAT) + "Z";
 
@@ -214,17 +194,6 @@ function getTodayEvents(cb) {
                    ENV['CALDAV_PASSWORD'] || process.env.CALDAV_PASSWORD, query_start_date, query_end_date, function(res) {
      cb(res);
   });
-=======
-  var query_start_date = moment().set({'hour': 0, 'minute': 0, 'second': 10}).format(config.caldav.timeFormat) + "Z";
- var query_end_date = moment().set({'hour': 23, 'minute': 59, 'second': 59}).format(config.caldav.timeFormat) + "Z";
- var output = {};
- output.start_date = query_start_date;
- output.end_date = query_end_date;
-
- caldav.getEvents(config.caldav.url, config.caldav.username, config.caldav.password, query_start_date, query_end_date, function(res) {
-    cb(res);
- });
->>>>>>> master
 }
 
 /*
