@@ -203,8 +203,8 @@ function getTodayEvents(cb) {
 /*
  * Main Express Process
  */
-app.listen((ENV['PORT'] || process.env.PORT), (ENV['API_HOST'] || process.env.API_HOST), function () {
- console.log(`${ENV['APP_NAME'] || process.env.APP_NAME} starting on port ${ENV['PORT'] || process.env.PORT}, host (${ENV['API_HOST'] || process.env.API_HOST}) (${new Date()})`)
+app.listen((ENV['PORT'] || process.env.PORT), (ENV['APIHOST'] || process.env.APIHOST), function () {
+ console.log(`${ENV['APP_NAME'] || process.env.APP_NAME} starting on port ${ENV['PORT'] || process.env.PORT}, host (${ENV['APIHOST'] || process.env.APIHOST}) (${new Date()})`)
 });
 
 
