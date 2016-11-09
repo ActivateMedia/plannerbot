@@ -48,7 +48,7 @@ var slack = new Slack(ENV['SLACK_WEBHOOK'] || process.env.SLACK_WEBHOOK,{
 });
 
 /* Root API Endpoint */
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
  res.send('Hi, I\'m PlannerBot!');
 });
 
@@ -173,7 +173,7 @@ function postTodayEvents(events, cb) {
     messages.attachments.push(_tmpObj);
   });
 
-  slack.notify(messages, function(err, result) {
+  slack.notify(messages, (err, result) => {
     if(err !== null) {
       console.log(err, result);
     }
@@ -195,7 +195,7 @@ function getTodayEvents(cb) {
 
   caldav.getEvents(ENV['CALDAV_URL'] || process.env.CALDAV_URL,
                    ENV['CALDAV_USERNAME'] || process.env.CALDAV_USERNAME,
-                   ENV['CALDAV_PASSWORD'] || process.env.CALDAV_PASSWORD, query_start_date, query_end_date, function(res) {
+                   ENV['CALDAV_PASSWORD'] || process.env.CALDAV_PASSWORD, query_start_date, query_end_date, (res) => {
      cb(res);
   });
 }
@@ -203,16 +203,16 @@ function getTodayEvents(cb) {
 /*
  * Main Express Process
  */
-app.listen((ENV['PORT'] || process.env.PORT), (ENV['APIHOST'] || process.env.APIHOST), function () {
- console.log(`${ENV['APP_NAME'] || process.env.APP_NAME} starting on port ${ENV['PORT'] || process.env.PORT}, host (${ENV['APIHOST'] || process.env.APIHOST}) (${new Date()})`)
+app.listen(ENV['PORT'] || process.env.PORT, () => {
+ console.log(`${ENV['APP_NAME'] || process.env.APP_NAME} starting on port ${ENV['PORT'] || process.env.PORT} (${new Date()})`)
 });
 
 
 /*
  * Prints the cache object keys currently stored in cache
  */
-app.get('/cache/keys', function(req, res) {
-  plannerbot.cache.keys( function( err, mykeys ){
+app.get('/cache/keys', (req, res) => {
+  plannerbot.cache.keys((err, mykeys) => {
     if( !err ){
       console.log( mykeys );
     }
@@ -222,7 +222,7 @@ app.get('/cache/keys', function(req, res) {
 /*
  * Prints the content of a specific cache object by key
  */
-app.get('/cache/key', function(req, res) {
+app.get('/cache/key', (req, res) => {
   var key = "D0T2HNJG6";
   var event = plannerbot.cache.get(key);
   if(typeof event !== "undefined") {
@@ -234,15 +234,15 @@ app.get('/cache/key', function(req, res) {
 
 
 /* Alchemy API calls */
-app.get('/alchemyapi/status', function(req, res) {
-  alchemy.apiKeyInfo({}, function(err, response) {
+app.get('/alchemyapi/status', (req, res) => {
+  alchemy.apiKeyInfo({}, (err, response) => {
     if (err) throw err;
 
     // Do something with data
     res.send("<p>Status: " + response.status + "</p><p>Consumed: " + response.consumedDailyTransactions + "</p><p>Limit: " + response.dailyTransactionLimit + "</p>");
   });
 });
-app.get('/alchemyapi/combined', function(req, res){
+app.get('/alchemyapi/combined', (req, res) => {
   var params = req.query;
   console.log(params);
   if(typeof params.data === "undefined" || params.data.length == 0) {
@@ -250,7 +250,7 @@ app.get('/alchemyapi/combined', function(req, res){
   } else {
     var features_array = params.features.split(',');
     console.log(features_array);
-    alchemy.combined(params.data, features_array, {}, function(err, response) {
+    alchemy.combined(params.data, features_array, {}, (err, response) => {
       if (err) throw err;
       res.send(response);
       //var keywords = response.keywords;
@@ -258,49 +258,49 @@ app.get('/alchemyapi/combined', function(req, res){
     });
   }
 })
-app.get('/alchemyapi/date', function(req, res){
+app.get('/alchemyapi/date', (req, res) => {
   var params = req.query;
   if(typeof params.data === "undefined" || params.data.length == 0) {
      res.send("Data missing");
   } else {
-    alchemy.date(params.data, {}, function(err, response) {
+    alchemy.date(params.data, {}, (err, response) => {
       if (err) throw err;
       res.send(response);
     });
   }
 });
-app.get('/alchemyapi/concepts', function(req, res){
+app.get('/alchemyapi/concepts', (req, res) => {
   var params = req.query;
   console.log(params.data);
   if(typeof params.data === "undefined" || params.data.length == 0) {
      res.send("Data missing");
   } else {
-    alchemy.concepts(params.data, {}, function(err, response) {
+    alchemy.concepts(params.data, {}, (err, response) => {
       if (err) throw err;
       var concepts = response.concepts;
       res.send(concepts);
     });
   }
 });
-app.get('/alchemyapi/relations', function(req, res){
+app.get('/alchemyapi/relations', (req, res) => {
   var params = req.query;
   console.log(params.data);
   if(typeof params.data === "undefined" || params.data.length == 0) {
      res.send("Data missing");
   } else {
-    alchemy.relations(params.data, {}, function(err, response) {
+    alchemy.relations(params.data, {}, (err, response) => {
       if (err) throw err;
       var relations = response.relations;
       res.send(relations);
     });
   }
 });
-app.get('/alchemyapi/keywords', function(req, res){
+app.get('/alchemyapi/keywords', (req, res) => {
   var params = req.query;
   if(typeof params.data === "undefined" || params.data.length == 0) {
      res.send("Data missing");
   } else {
-    alchemy.keywords(params.data, {}, function(err, response) {
+    alchemy.keywords(params.data, {}, (err, response) => {
       if (err) throw err;
       var keywords = response.keywords;
       res.send(keywords);
