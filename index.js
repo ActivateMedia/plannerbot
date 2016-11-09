@@ -15,6 +15,7 @@ if(typeof ENV === "undefined") {
   ENV = {};
   if(typeof process.env.CALDAV_URL === "undefined") {
     require('dotenv').config();
+    console.log("Loading dotenv locally");
   }
 }
 
