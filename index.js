@@ -14,7 +14,7 @@ var myCache = new NodeCache();
 if(typeof ENV === "undefined") {
   ENV = {};
   if(typeof process.env.CALDAV_URL === "undefined") {
-    require('dotenv').config();  
+    require('dotenv').config();
   }
 }
 
@@ -203,7 +203,7 @@ function getTodayEvents(cb) {
  * Main Express Process
  */
 app.listen(ENV['PORT'] || process.env.PORT, function () {
- console.log(`${ENV['APP_NAME'] || process.env.APP_NAME} starting on port ${ENV['APP_PORT'] || process.env.APP_PORT} (${new Date()})`)
+ console.log(`${ENV['APP_NAME'] || process.env.APP_NAME} starting on port ${ENV['PORT'] || process.env.PORT} (${new Date()})`)
 });
 
 
