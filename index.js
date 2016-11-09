@@ -13,7 +13,9 @@ var myCache = new NodeCache();
 
 if(typeof ENV === "undefined") {
   ENV = {};
-  require('dotenv').config();
+  if(typeof process.env.CALDAV_URL === "undefined") {
+    require('dotenv').config();  
+  }
 }
 
 var plannerbot = new PlannerBot({
