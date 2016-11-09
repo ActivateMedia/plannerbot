@@ -200,7 +200,7 @@ function getTodayEvents(cb) {
 /*
  * Main Express Process
  */
-app.listen(ENV['APP_PORT'] || process.env.APP_PORT, ENV['API_HOST'] || process.env.API_HOST, function () {
+app.listen(ENV['PORT'] || process.env.PORT, function () {
  console.log(`${ENV['APP_NAME'] || process.env.APP_NAME} starting on port ${ENV['APP_PORT'] || process.env.APP_PORT} (${new Date()})`)
 });
 
