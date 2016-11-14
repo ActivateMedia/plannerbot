@@ -64,7 +64,7 @@ cron.schedule(ENV['CRON'] || process.env.CRON, () => {
 // Keep Awake om Heroku
 if(ENV['BOT_URL'] || process.env.BOT_URL) {
   setInterval(function() {
-      https.get(`http://${ENV['BOT_URL'] || process.env.BOT_URL}`);
+      https.get(`https://${ENV['BOT_URL'] || process.env.BOT_URL}`);
   }, ENV['BOT_PING_INTERVAL'] || process.env.BOT_PING_INTERVAL || 43200000); // every 12 hours
 }
 
