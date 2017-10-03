@@ -227,7 +227,7 @@ const postTodayEvents = (context, events) => {
 /*
  * Default webtask return function
  */
-module.exports = function(context, cb) {
+module.exports = function(context, callback) {
   getTodayEvents(context)
   .then(events => {
     events.sort(compare);
