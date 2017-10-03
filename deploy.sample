@@ -1,0 +1,9 @@
+wt create planner \
+  --name planner \
+  --secret CALDAV_URL= \
+  --secret CALDAV_USER= \
+  --secret CALDAV_PASSWORD= \
+  --secret SLACK_WEBHOOK= \
+  --secret SLACK_CHANNEL="#planner" \
+  --secret SLACK_USERNAME=PlannerBot \
+  --secret SLACK_EMOJI=":spiral_calendar_pad:"
